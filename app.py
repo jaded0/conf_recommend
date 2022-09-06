@@ -7,6 +7,7 @@ import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 
 app = Dash(__name__, suppress_callback_exceptions=True)
+server = app.server
 
 # assume you have a "long-form" data frame
 # see https://plotly.com/python/px-arguments/ for more options
@@ -77,7 +78,7 @@ def update_graphs(active_cell):
     if (active_cell):
         resp = current_table.iloc[active_cell['row']]
 
-        nbrs = NearestNeighbors(n_neighbors=10, algorithm='ball_tree').fit(df.loc[:, '0':])
+        nbrs = NearestNeighbors(n_neighbors=15, algorithm='ball_tree').fit(df.loc[:, '0':])
         distances, indices = nbrs.kneighbors([df.loc[resp['index'], '0':]])
 
         rec = df.iloc[indices[0]]
