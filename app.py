@@ -82,6 +82,7 @@ def update_graphs(active_cell):
         distances, indices = nbrs.kneighbors([df.loc[resp['index'], '0':]])
 
         rec = df.iloc[indices[0]]
+        rec = rec[['index', 'title', 'author', 'year', 'month', 'topics']]
 
         return f"{resp['title']} by {resp['author']}, id:{resp['index']}", \
                dash_table.DataTable(
