@@ -5,9 +5,17 @@ from dash import Dash, html, dcc, Input, Output, dash_table, callback
 import plotly.express as px
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
+from crontab import CronTab
 
 app = Dash(__name__, suppress_callback_exceptions=True)
 server = app.server
+
+cron = CronTab(user='app')
+for job in cron:
+    print(job)
+job = cron.new('python scraper.py')
+job.day.every(1)
+cron.write()
 
 # assume you have a "long-form" data frame
 # see https://plotly.com/python/px-arguments/ for more options
