@@ -24,6 +24,7 @@ server = app.server
 
 df = pd.read_csv('conf_LDAd.csv')
 df.rename(columns={'Unnamed: 0': 'index'}, inplace=True)  # TODO: make this line unnecessary
+df.sort_values('year', inplace=True, ascending=False)
 current_table = df
 
 
