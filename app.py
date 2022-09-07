@@ -188,4 +188,5 @@ def update_graphs(active_cell):
 #         print(active_cell)
 
 if __name__ == '__main__':
+    app.title="Conf Talk Recommender"
     app.run_server(debug=True)
