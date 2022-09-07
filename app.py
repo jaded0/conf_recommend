@@ -1,7 +1,7 @@
 # Run this app with `python app.py` and
 # visit http://127.0.0.1:8050/ in your web browser.
 
-from dash import Dash, html, dcc, Input, Output, dash_table, callback
+from dash import Dash, html, dcc, Input, Output, dash_table, callback, dcc
 from dash.dash_table import FormatTemplate
 import colorlover
 from collections import OrderedDict
@@ -83,20 +83,12 @@ def discrete_background_color_bins(df, n_bins=5, columns='all'):
 ldavis = open("ldavis.html", "r").read()
 # print(ldavis)
 app.layout = html.Div(children=[
-    html.H1(children='General Conference Recommender'),
-
-    # html.Div(children='''
-    #     Dash: A web application framework for your data.
-    # '''),
-
-    # dcc.Graph(
-    #     id='example-graph',
-    #     figure=fig
-    # ),
-
-    html.H6("Change the value in the text box to see callbacks in action!"),
+    dcc.Markdown('''
+    # General Conference Recommender
+    *Search for your favorite talk!*
+    '''),
     html.Div([
-        "Input: ",
+        "Search: ",
         dcc.Input(id='my-input', value='perfect', type='text')
     ]),
     html.Br(),
@@ -129,7 +121,7 @@ def update_output_div(input_value):
     outputval = outputval[['index', 'title', 'author', 'year']]
     return dash_table.DataTable(
         outputval.to_dict('records'),
-        [{"name": i, "id": i} for i in outputval.columns],
+        [{"name": i, "id": i, "presentation":"markdown"} for i in outputval.columns],
         id='tbl',
         # hidden_columns=['index'],
         style_cell_conditional=[
@@ -151,11 +143,12 @@ def update_graphs(active_cell):
         distances, indices = nbrs.kneighbors([df.loc[resp['index'], '0':]])
 
         rec = df.iloc[indices[0]]
+        rec['title'] = "[" + rec['title'] + "](" + rec['url'] + ")"
         rec = rec[['index', 'title', 'author', 'year', 'month', '0', '1', '2', '3', '4', '5', '6', '7', '8']]
 
         # basic = FormatTemplate.Format()
         percentage = FormatTemplate.percentage(0, False)
-        columns = [{"name": rec.columns[i], "id": rec.columns[i]} for i in range(5)]
+        columns = [{"name": rec.columns[i], "id": rec.columns[i], "presentation":"markdown"} for i in range(5)]
         columns.extend([{"name": str(i+1), "id": str(i), 'type':'numeric', 'format':percentage} for i in range(9)])
         print(columns)
         # columns = [{"name": i, "id": i, 'type': 'numeric' if any(x.isdigit() for x in i) else 'any',
@@ -186,6 +179,13 @@ def update_graphs(active_cell):
     else:
         return "Click the table", "click the table above"
 
+#
+# @callback(
+#     Input('rec_tbl', 'active_cell')
+# )
+# def gotolink(active_cell):
+#     if (active_cell):
+#         print(active_cell)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
